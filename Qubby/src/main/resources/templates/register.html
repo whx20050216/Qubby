@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>注册 - 讨论区</title>
+    <style>
+        body { font-family: Arial; background: #f0f0f0; padding: 50px; }
+        .register-box { background: white; padding: 30px; border-radius: 10px; width: 350px; margin: 0 auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input[type=text], input[type=password] { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        button { width: 100%; padding: 10px; background: #2196F3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0b7dda; }
+        .error { color: red; text-align: center; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+<div class="register-box">
+    <h2 style="text-align:center;">用户注册</h2>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <form action="/register" method="post">
+        用户名：<input type="text" name="username" required><br>
+        密码：<input type="password" name="password" required><br>
+        <button type="submit">注册</button>
+    </form>
+
+    <p style="text-align:center; margin-top:20px;">
+        已有账号？<a href="/login">立即登录</a>
+    </p>
+</div>
+</body>
+</html>

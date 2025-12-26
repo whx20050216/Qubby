@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="replies">
+    <div th:each="reply : ${discussion.replies}" class="reply-item">
+        <div class="reply-info">
+            <span th:text="${reply.author}"></span> 于
+            <span th:text="${#dates.format(reply.createTime, 'yyyy-MM-dd HH:mm')}"></span> 回复：
+        </div>
+        <div class="reply-content" th:text="${reply.content}"></div>
+    </div>
+    <div th:if="${#lists.isEmpty(discussion.replies)}" class="no-reply">
+        暂无回复
+    </div>
+</div>
+</body>
+</html>
