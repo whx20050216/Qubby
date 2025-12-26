@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>讨论详情 - 讨论区</title>
+    <style>
+        body { font-family: Arial; background: #f0f0f0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .btn-back { display: inline-block; padding: 10px 20px; background: #666; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 20px; }
+        .discussion-content { background: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0; white-space: pre-line; }
+        .reply-item { border-left: 3px solid #4CAF50; padding: 15px; margin: 15px 0; background: #f9f9f9; }
+        .reply-info { color: #666; font-size: 14px; margin-bottom: 10px; }
+        .reply-content { white-space: pre-line; }
+        textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; height: 150px; resize: vertical; }
+        button { padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        .no-reply { color: #666; padding: 20px; text-align: center; }
+    </style>
+
+    <!-- AJAX自动刷新脚本 -->
+    <script th:inline="javascript">
+        window.onload = function() {
+            // 获取讨论ID（Thymeleaf内联JavaScript）
+            var discussionId = [[${discussion.id}]];
+
+            // 每8秒刷新回复列表
+            setInterval(function() {
+                fetch('/discussion/' + discussionId + '/replies-fragment')
+                    .then(response => response.text())
+                    .then(html => {
+                        // 更新回复容器内容
+                        document.getElementById('replyContainer').innerHTML = html;
+                    })
+                    .catch(error => console.log('刷新失败:', error));
+            }, 8000);
+        };
+    </script>
+</head>
+<body>
+<div class="container">
+    <a href="/discussion" class="btn-back">返回列表</a>
+
+    <h2 th:text="${discussion.title}"></h2>
+    <div class="discussion-content" th:text="${discussion.content}"></div>
+    <div class="reply-info">
+        作者：<span th:text="${discussion.author}"></span> |
+        时间：<span th:text="${#dates.format(discussion.createTime, 'yyyy-MM-dd HH:mm')}"></span>
+    </div>
+
+    <h3>回复</h3>
+
+    <!-- 回复列表容器 -->
+    <div id="replyContainer">
+        <div th:if="${#lists.isEmpty(discussion.replies)}" class="no-reply">
+            暂无回复
+        </div>
+
+        <div th:each="reply : ${discussion.replies}" class="reply-item">
+            <div class="reply-info">
+                <span th:text="${reply.author}"></span> 于
+                <span th:text="${#dates.format(reply.createTime, 'yyyy-MM-dd HH:mm')}"></span> 回复：
+            </div>
+            <div class="reply-content" th:text="${reply.content}"></div>
+        </div>
+    </div>
+
+    <h3>发表回复</h3>
+    <form th:action="@{/reply}" method="post">
+        <input type="hidden" name="discussionId" th:value="${discussion.id}">
+        <textarea name="content" required placeholder="请输入回复内容..."></textarea><br>
+        <button type="submit">提交回复</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>讨论列表 - 讨论区</title>
+    <style>
+        body { font-family: Arial; background: #f0f0f0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn { display: inline-block; padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }
+        .btn:hover { background: #45a049; }
+        .discussion-item { border-bottom: 1px solid #eee; padding: 15px 0; }
+        .discussion-item:hover { background: #f9f9f9; }
+        .title { font-size: 18px; font-weight: bold; color: #333; text-decoration: none; display: block; }
+        .title:hover { color: #4CAF50; }
+        .info { color: #666; font-size: 14px; margin-top: 5px; }
+        .empty { text-align: center; color: #666; padding: 30px; }
+    </style>
+
+    <!-- AJAX自动刷新 -->
+    <script>
+        window.onload = function() {
+            setInterval(function() {
+                fetch('/discussion/list-fragment')
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('listContainer').innerHTML = html;
+                    })
+                    .catch(error => console.log('刷新失败:', error));
+            }, 10000);
+        };
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>讨论列表</h2>
+        <div>
+            <span th:text="'欢迎，' + ${session.currentUser.username} + '！'"></span>
+            <a href="/logout" style="margin-left: 20px; color: #666;">退出登录</a>
+        </div>
+    </div>
+
+    <a href="/discussion/new" class="btn">发起新讨论</a>
+
+    <!-- 列表容器 -->
+    <div id="listContainer">
+        <div th:if="${#lists.isEmpty(discussionList)}" class="empty">
+            暂无讨论，快来发起第一个吧！
+        </div>
+
+        <div th:each="discussion : ${discussionList}" class="discussion-item">
+            <a th:href="@{/discussion/{id}(id=${discussion.id})}" class="title" th:text="${discussion.title}"></a>
+            <div class="info">
+                作者：<span th:text="${discussion.author}"></span> |
+                时间：<span th:text="${#dates.format(discussion.createTime, 'yyyy-MM-dd HH:mm')}"></span> |
+                回复数：<span th:text="${#lists.size(discussion.replies)}"></span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

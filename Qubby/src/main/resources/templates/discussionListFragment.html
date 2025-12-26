@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 只包含列表内容，无head、无导航 -->
+<div th:fragment="list">
+    <div th:if="${#lists.isEmpty(discussionList)}" class="empty">
+        暂无讨论，快来发起第一个吧！
+    </div>
+
+    <div th:each="discussion : ${discussionList}" class="discussion-item">
+        <a th:href="@{/discussion/{id}(id=${discussion.id})}" class="title" th:text="${discussion.title}"></a>
+        <div class="info">
+            作者：<span th:text="${discussion.author}"></span> |
+            时间：<span th:text="${#dates.format(discussion.createTime, 'yyyy-MM-dd HH:mm')}"></span> |
+            回复数：<span th:text="${#lists.size(discussion.replies)}"></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

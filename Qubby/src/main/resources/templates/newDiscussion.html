@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>发起讨论 - 讨论区</title>
+    <style>
+        body { font-family: Arial; background: #f0f0f0; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input[type=text], textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        textarea { height: 200px; resize: vertical; }
+        button { padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        .btn-back { display: inline-block; padding: 10px 20px; background: #666; color: white; text-decoration: none; border-radius: 5px; margin-right: 10px; }
+        .error { color: red; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>发起新讨论</h2>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <form action="/discussion/new" method="post">
+        标题：<input type="text" name="title" required><br>
+        内容：<textarea name="content" required></textarea><br>
+        <button type="submit">发布</button>
+        <a href="/discussion" class="btn-back">返回列表</a>
+    </form>
+</div>
+</body>
+</html>
