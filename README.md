@@ -155,6 +155,3 @@ spring.thymeleaf.cache=false
 ```properties
 server.port=8081
 ```
-
-## 许可证
-MIT
